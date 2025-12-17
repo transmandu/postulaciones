@@ -34,18 +34,16 @@ export const authOptions: NextAuthOptions = {
 
         if (!isValid) return null;
 
-        // Retornamos el objeto cumpliendo con los campos de la DB
         return {
           id: user.id,
           name: user.name,
           dni: user.dni,
-        } as CustomUser; // Forzamos el tipo aquí
+        } as CustomUser;
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Si el usuario acaba de iniciar sesión, pasamos el DNI al token
       if (user) {
         const customUser = user as CustomUser;
         token.id = customUser.id;
@@ -56,7 +54,6 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Pasamos el DNI del token a la sesión para el frontend
       if (session.user) {
-        // Usamos aserciones de tipo para evitar el error de 'any'
         (session.user as { id: string }).id = token.id as string;
         (session.user as { dni: string }).dni = token.dni as string;
       }

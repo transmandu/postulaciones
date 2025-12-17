@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
@@ -8,23 +9,23 @@ export default function LoginPage() {
   const [dni, setDni] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError(""); // Limpiamos errores previos
 
-    // 2. Enviamos "dni" en lugar de "email"
-    const result = await signIn("credentials", {
-      dni,
-      password,
-      redirect: true,
-      callbackUrl: "/dashboard",
-    });
+  const result = await signIn("credentials", {
+    dni,
+    password,
+    redirect: false,
+  });
 
-    if (result?.error) {
-      setError("Credenciales inválidas. Inténtalo de nuevo.");
-    }
-  };
+  if (result?.error) {
+    setError("DNI o contraseña inválidos");
+  } else {
+    router.push("/dashboard");
+  }
+};
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black font-sans">
