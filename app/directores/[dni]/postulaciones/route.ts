@@ -1,11 +1,18 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+// Definimos el tipo para los parámetros asíncronos de Next.js 15
+type RouteContext = {
+  params: Promise<{ dni: string }>;
+};
 
 export async function GET(
-  _req: Request,
-  { params }: { params: { dni: string } }
+  _req: NextRequest, // Cambiado a NextRequest por convención
+  { params }: RouteContext
 ) {
-  const dni = decodeURIComponent(params.dni).trim();
+  // En Next.js 15, debemos esperar a que los params se resuelvan
+  const { dni: rawDni } = await params;
+  const dni = decodeURIComponent(rawDni).trim();
 
   const director = await prisma.user.findUnique({
     where: { dni },
@@ -21,17 +28,28 @@ export async function GET(
 }
 
 export async function POST(
-  req: Request,
-  { params }: { params: { dni: string } }
+  req: NextRequest,
+  { params }: RouteContext
 ) {
-  const dni = decodeURIComponent(params.dni).trim();
+  const { dni: rawDni } = await params;
+  const dni = decodeURIComponent(rawDni).trim();
+
   const { text } = await req.json();
 
-  const director = await prisma.user.findUnique({ where: { dni }, select: { id: true } });
-  if (!director) return NextResponse.json({ error: "Director no existe" }, { status: 404 });
+  const director = await prisma.user.findUnique({
+    where: { dni },
+    select: { id: true }
+  });
+
+  if (!director) {
+    return NextResponse.json({ error: "Director no existe" }, { status: 404 });
+  }
 
   const created = await prisma.nomination.create({
-    data: { text: String(text), directorId: director.id },
+    data: {
+      text: String(text),
+      directorId: director.id
+    },
     select: { id: true, text: true, createdAt: true },
   });
 

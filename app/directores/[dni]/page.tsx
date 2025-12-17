@@ -14,5 +14,19 @@ export default async function DirectorPage({ params }: { params: { dni: string }
 
   if (!director) notFound();
 
-  return <DirectorView director={director} />;
+  const formattedDirector = {
+    ...director,
+    nominationsCreated: director.nominationsCreated.map((n) => ({
+      id: n.id,
+      text: n.text,
+      createdAtISO: n.createdAt.toISOString(),
+    createdAtLabel: n.createdAt.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }),
+  })),
+};
+
+  return <DirectorView director={formattedDirector} />;
 }

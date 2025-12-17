@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useFormStatus } from "react-dom";
+import Navbar from "@/components/Navbar";
 
 type Props = {
   director: {
@@ -41,6 +42,7 @@ export default function DirectorView({ director }: Props) {
 
   return (
     <main className="mx-auto max-w-4xl p-6 space-y-6 flex flex-col h-screen justify-center">
+      <Navbar/>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
