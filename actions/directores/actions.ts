@@ -34,13 +34,11 @@ export async function createDirector(
 
     // 3. LA LÓGICA CLAVE: Usamos el 'dni' como contraseña
     // Le aplicamos el hash directamente al valor del DNI
-    const hashedPassword = await bcrypt.hash(dni, 10);
 
     await prisma.user.create({
       data: {
         name: name,
         dni: dni,
-        password: hashedPassword, // Guardamos el hash del DNI
       },
     });
 
