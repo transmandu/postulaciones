@@ -53,7 +53,7 @@ export default function NewDirectorPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Registrando..." : "Crear Cuenta e ir al Login"}
+              {isPending ? "Registrando..." : "Crear Cuenta"}
             </Button>
           </form>
         </CardContent>
