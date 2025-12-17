@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id   String @id @default(cuid())
+  name String
+  dni  String @unique
+  password String
+  nominationsCreated Nomination[]
+  createdAt DateTime @default(now())
+}
+
+model Nomination {
+  id        String   @id @default(cuid())
+  text      String
+
+  directorId String
+  director   User     @relation(fields: [directorId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@index([directorId])
+}
